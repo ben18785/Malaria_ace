@@ -108,7 +108,7 @@ const double PI=3.14159265;
 		vector<HostSeekers> Ho[nx][ny];
 		vector<Ovipositers> Ov[nx][ny];
 		vector<BreedSite> Breed[nx][ny];
-		vector<FeedSite> Feed[nx][ny]; //This is a vector of FeedSites' test
+		vector<FeedSite> Feed[nx][ny]; //This is a vector of FeedSites
 		vector<sample> sa[nx][ny];
 	};
 

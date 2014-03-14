@@ -980,7 +980,7 @@ int* SelectEggs (char gen)
 
 	void BreedCreate()
 	      {
-		BreedSite apl;
+		BreedSite apl; //Create a breeding site called 'apl'. That stores information about the location of it. Along with numbers of individuals around it.
 		int xi,yi;
 		if(pa.sigmaC>0)//pa.sigmaC measures the turnover of sample points. It seems like when there is turnover it is necessary
             //to create breeding sites according to house densities. Otherwise just allocate them randomly.
@@ -1001,7 +1001,8 @@ int* SelectEggs (char gen)
 				    //Select a random sample from the list of all samples from within the selected large square
 				ind=rg.IRandom(0,cell.samples[xi][yi]-1);
 
-                // If the house density within a
+                // If the sum of the house density within a large square (multiplied by a random (0,1) number) is less than the house density of a particularly randomly drawn
+                // sample's house density (where the sample is drawn from those within the large square), then make test = 1.
 				if(rg.Random()*cell.house_dense[xi][yi]<indiv.sa[xi][yi][ind].house_dense)test=1;
 				};
 			apl.x = indiv.sa[xi][yi][ind].x;
@@ -1017,13 +1018,19 @@ int* SelectEggs (char gen)
 				};
 			sampCreate();
 			}
-		else
+		else // Randomly select a large square, and coordinates within that large square
 			{
+            //Large square selection
 			xi=rg.IRandom(0,nx-1);
 			yi=rg.IRandom(0,ny-1);
+
+			//Random location from within that large square. 'apv' is an instance of a 'Breedsite' and contains information
+			// about its location, along with the numbers of individuals in it.
 			apl.x=dx*rg.Random();
 			apl.y=dy*rg.Random();
 			};
+
+        // Initialise all the numbers of individuals within the breeding site to be zero.
 		apl.comp=0;
 		apl.juvX=0;
 		apl.juvY=0;
@@ -1034,10 +1041,18 @@ int* SelectEggs (char gen)
 		apl.juvW=0;
 		apl.status='e';
 		apl.unmated_females=0;
+
+		//Increment the count of the number of breed sites within that large square by 1.
 		cell.Breed[xi][yi]++;
+
+		//Add this breedsite to the list of breedsites for this particular large square
 		indiv.Breed[xi][yi].push_back(apl);
+
+		//Increment totals by one. Not sure what the difference between breed_w and breed_e is
 		to.Breed_w++;
 		to.Breed_e++;
+
+		//Update the ovipositers after the breedsite has been created.
 		UpdateHabHab(xi,yi,cell.Breed[xi][yi]-1,'b');
 	    return;};
 
@@ -1133,26 +1148,34 @@ int* SelectEggs (char gen)
 		};
 	    return;};
 
+    // Function to update local ovipositers after a breedsite is created or destroyed.
+    // nxx and nyy are indices of the particular large square being picked. index is the number of breedsites within that large
+    // square. ev is a char which is 'b' if the site is created, and 'd' if it is destroyed.
 	void UpdateHabHab(int nxx,int nyy,int index,char ev)//if a breedsite is created (ev='b') or destroyed (ev='d'), update local ovipositers
 	{
+
 		int xi,yi;
 		int indexB;
 		int q;
 		double dx1,dx2,dy1,dy2;
-		if(ev=='b')q=1;
-		if(ev=='d')q=-1;
+		if(ev=='b')q=1;//Site created
+		if(ev=='d')q=-1;//Site destroyed
 		for(int k=0;k<3;k++)
 		{
 			for(int kk=0;kk<3;kk++)
 			{
+            // Need to figure out what is happening here. Think it is some sort of selection of the large square dependent on k
 			if(k==0){xi=modulo(nxx-1,'X'); dx1=0;dx2=dx;};
 			if(k==1){xi=nxx;dx1=0;dx2=0;};
 			if(k==2){xi=modulo(nxx+1,'X');dx1=dx;dx2=0;};
 			if(kk==0){yi=modulo(nyy-1,'Y');dy1=0;dy2=dy;};
 			if(kk==1){yi=nyy;dy1=0;dy2=0;};
 			if(kk==2){yi=modulo(nyy+1,'Y');dy1=dy;dy2=0;};
+
+            // Go through each of the individual Ovipositers within the large square. 'Cell.Ov[xi][yi] holds the total number of ovipositers in that large square
 			for(indexB=0;indexB<cell.Ov[xi][yi];indexB++)
 				{
+                //If the distance between the particular ovipositer and the breeding site is less than the breedsite detection radius then so some sort of egg laying (not sure on the specifics here)
 				if(dist(dx1+indiv.Ov[xi][yi][indexB].x,dy1+indiv.Ov[xi][yi][indexB].y, dx2+indiv.Breed[nxx][nyy][index].x,dy2+indiv.Breed[nxx][nyy][index].y)<pa.LB)
 					{
 						indiv.Ov[xi][yi][indexB].larv_hab+=q;
@@ -1331,6 +1354,7 @@ int* SelectEggs (char gen)
 		      to.house_dense+=indiv.sa[nxx][nyy][index].house_dense;
 	      return;};
 
+    // Need to figure out what the point of this is!
 	int modulo(int i,char XorY)
 		{
 		int res;
