@@ -26,11 +26,11 @@
             //in is an example of the 'initials' struct which contains initial conditions
             // pa is an instance of 'Pars' - container for various parameters involved in the simulation.
             ti.interval=1;
-			ti.totalruntime=10;
-			ti.maxT=1000;
+			ti.totalruntime=100;
+			ti.maxT=300;
 			ti.rec=200;
 			ti.landscape_initiation=50;
-			ti.N=3;
+			ti.N=1;
 			in.heg=1000;
 			in.dist='p';
 			in.heg_time=50;
@@ -172,7 +172,7 @@
 			os.str("");
 
             os<<"Results"<<pa.set<<".txt";
-			run.open(os.str().c_str()); // Use this if want to write output to file instead of cout
+            run.open(os.str().c_str());// Use this if want to write output to file instead of cout
 			RunNReps(ti.N);
 			run.close();os.str("");
 		return 0;};
@@ -196,8 +196,9 @@
 		double TTT=0;
 		int swit=0;
 		while (TT<ti.maxT)//loop for running between one time interval
-			{
+			{ //Record the various totals of different species to the consol
 cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;//write global densiies into output
+			run<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;//write global densiies into output
 			TT+=ti.interval;
 			TTT+=ti.interval;
 			if(swit==0 && TT>in.heg_time && to.J>0)
@@ -1364,7 +1365,9 @@ int* SelectEggs (char gen)
 	double dmodulo(double i, double n)
 		{ return fmod((fmod(i,n)+n),n); };
 
-	int pick (double* list,int len,double sum)
+	int pick (double* list,int len,double sum)//A function which takes a list of the propensities for each of the reactions, and chooses
+	//a reaction on the basis of that propensity. Not sure what exact flavour of Gillespie this is?
+	//Sum here is the sum of all the propensities. Len is the number of the reactions
 		{
 			int test=0;
 			int i;
