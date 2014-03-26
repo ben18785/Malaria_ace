@@ -11,28 +11,13 @@
 	Individuals indiv;//indiv is an array of nx by ny structs, each struct corresponds to a particular large square and is a set of vectors, each vector is a list of the individuals in a given class, e.g. HostSeekers
 	PerCell cell; //cell is an array of nx by ny structs, each struct contains the total of each entity type for the given square
 	totals to; //struct of the global totals of each entity type
-	ostringstream os;ofstream run,param,ov_holder;// for writing output files
+	ostringstream os;ofstream run,param;// for writing output files
 	Times ti;// simulation time parameters
 	std::clock_t star;//start absolute time
 	double totalruntime;
 	double dx,dy;//x and y lengths of a gridcell
 	int N;// how simulation many replicates to run
 	double landscape_initiation =0;// how long to run the landscape dynamics pre-mosquitoes. This only needs to be done if there is feedsite/breedsite covariance (rho not=1)
-
-
-    // My variables
-    int N_randeggs = 2e7;
-    int N_randjuv = 5e6;
-    int N_randtot = 1.2e8;
-    int rand_ijuvcounter = 0;
-    int rand_eggsicounter = 0;
-    int rand_consi = 0;
-    vector<int> r_eggslist(N_randeggs);
-    vector<int> r_juvlist(N_randjuv);
-    vector<double> r_tot(N_randtot);
-    double time_total = 0;
-
-
 
 	int main(void){
 
@@ -41,9 +26,9 @@
             //in is an example of the 'initials' struct which contains initial conditions
             // pa is an instance of 'Pars' - container for various parameters involved in the simulation.
             ti.interval=1;
-			ti.totalruntime=100;
+			ti.totalruntime=10;
 			ti.maxT=300;
-			ti.rec=200;
+			ti.rec=5;
 			ti.landscape_initiation=50;
 			ti.N=1;
 			in.heg=1000;
@@ -87,27 +72,6 @@
 			pa.sigmaB=0.05;
 			pa.sigmaC=0.02;
 			pa.rho=1;
-
-            //Function which generates the random numbers between 0 and big_number
-//            int big_numbereggs = 300;
-//            int big_numberjuv = 100;
-//            for (int i = 0; i<N_randeggs; i++)
-//            {
-//                r_eggslist[i] = rg.IRandom(0,big_numbereggs);
-//            }
-//            for (int i = 0; i<N_randjuv; i++)
-//            {
-//                r_juvlist[i] = rg.IRandom(0,big_numberjuv);
-//            }
-
-            for (int i = 0; i<N_randtot; i++)
-            {
-                r_tot[i] = rg.Random();
-            }
-
-
-
-
 
 
 
@@ -207,13 +171,10 @@
 			param.close();
 			os.str("");
 
-//            os<<"Results"<<pa.set<<".txt";
-//            run.open(os.str().c_str());// Use this if want to write output to file instead of cout
-            os<<"ov_results"<<pa.set<<".txt";
-            ov_holder.open(os.str().c_str());
+            os<<"Results"<<pa.set<<".txt";
+            run.open(os.str().c_str());// Use this if want to write output to file instead of cout
 			RunNReps(ti.N);
-//			run.close();os.str("");
-			ov_holder.close();os.str("");
+			run.close();os.str("");
 		return 0;};
 
 
@@ -236,9 +197,8 @@
 		int swit=0;
 		while (TT<ti.maxT)//loop for running between one time interval
 			{ //Record the various totals of different species to the consol
-            //cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;//write global densiies into output
-            cout<<rand_eggsicounter<<"    "<<rand_ijuvcounter<<"     "<<rand_consi<<"\n";
-//			run<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;//write global densiies into output
+cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;//write global densiies into output
+			run<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;//write global densiies into output
 			TT+=ti.interval;
 			TTT+=ti.interval;
 			if(swit==0 && TT>in.heg_time && to.J>0)
@@ -251,7 +211,7 @@
 				record(10000*(i+1)+int(TT),indiv,cell);// make a file of spatial data
 				TTT-=ti.rec;
 				};
-			RunOnceInt(ti.interval);//ti.interval is the length of time over which we run the RunOnce - randomly generating the time increment until we reach ti.interval
+			RunOnceInt(ti.interval);
 			};
 cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;
 	return;};
@@ -266,16 +226,8 @@ cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "
 		    {
 			dt=OneStep();
 			T+=dt;
-
-			// Outputting the number of eggs against time
-
-			time_total += dt;
-            ov_holder<<time_total<<"     "<<to.Ov<<"\n";
-
 			if((std::clock() - star)/ (double)CLOCKS_PER_SEC>ti.totalruntime)exit(1);// abort if simulation exceeds alloted real time
 		    };
-
-
 	return;}
 
 
@@ -321,7 +273,7 @@ cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "
 			    // For each of the feeding sites we first need to randomly choose its location.
 			    // Firstly this needs to be done by selecting a large square at random from the set.
 
-				int nxx=rg.IRandom(0,nx-1); //rg. is an instance of a random number generator with a particular seed. Output random integer in the interval min <= x <= max
+				int nxx=rg.IRandom(0,nx-1);// rg. is an instance of a random number generator with a particular seed. Output random integer in the interval min <= x <= max
 				int nyy=rg.IRandom(0,ny-1);
 				cout<<"Feeding site "<<index<<" is located in the following large square coordinates "<<nxx<<", "<<nyy<<"\n";
 				cell.Feed[nxx][nyy]++; //This designates the particular large square in which the
@@ -412,7 +364,6 @@ cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "
 		else if(i==15) sampDestroy();
 		else if(i==16) sampCreate();
 //	testfunc('o',i);   this is a debugging function! useful if something is going wrong after modification:)
-
 	return dt;};
 
 
@@ -427,9 +378,7 @@ cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "
 		int ind;
 		while(test==0)// this loops picks an individual in the choosen cell (xi,yi) based on relative oviposition rates of the individuals in that cell
 		{
-		ind=rg.IRandom(0,cell.Ov[xi][yi]-1);rand_eggsicounter++;//(r_eggslist[rand_eggsicounter] % (cell.Ov[xi][yi]-1)); rand_eggsicounter++;
-		//rg.IRandom(0,cell.Ov[xi][yi]-1);rand_eggsicounter++;
-
+		ind=rg.IRandom(0,cell.Ov[xi][yi]-1);
 		if(rg.Random()*cell.O_ovi[xi][yi]<indiv.Ov[xi][yi][ind].larv_hab)test=1;
 		};
 
@@ -588,7 +537,7 @@ int* SelectEggs (char gen)
 			int test=0;
 			while(test==0)
 			{
-			ind=rg.IRandom(0,cell.Breed[xi][yi]-1);rand_ijuvcounter++;
+			ind=rg.IRandom(0,cell.Breed[xi][yi]-1);
 			if(rg.Random()*cell.Juv[xi][yi]<indiv.Breed[xi][yi][ind].juvX+ indiv.Breed[xi][yi][ind].juvY+ indiv.Breed[xi][yi][ind].juvW)test=1;
 			};
 		      }
@@ -601,7 +550,7 @@ int* SelectEggs (char gen)
 			int test=0;
 			while(test==0)
 			{
-			ind=rg.IRandom(0,cell.Breed[xi][yi]-1);rand_ijuvcounter++;
+			ind=rg.IRandom(0,cell.Breed[xi][yi]-1);
 			if(rg.Random()*cell.J_comp[xi][yi]<indiv.Breed[xi][yi][ind].comp)test=1;
 			};
 		      };
@@ -1548,7 +1497,7 @@ int* SelectEggs (char gen)
 	{
 	ostringstream os;
 	ofstream logfile;
-	os<<"Par"<<pa.set<<"Time"<<T<<".txt";
+	os<<"Par"<<pa.set<<"Time"<<T<<".csv";
 	cout<<"Making log file...\n";
 	logfile.open(os.str().c_str());
 	for(int nxx=0;nxx<nx;nxx++)
@@ -1557,17 +1506,22 @@ int* SelectEggs (char gen)
 				{
 					for(int index=0;index<cell.Breed[nxx][nyy];index++)
 					{
-						logfile<<dx*nxx+indiv.Breed[nxx][nyy][index].x<<"     "
-							<<dy*nyy+indiv.Breed[nxx][nyy][index].y<<"     "
-							<<indiv.Breed[nxx][nyy][index].juvX<<"     "
-							<<indiv.Breed[nxx][nyy][index].juvW<<"     "
-							<<indiv.Breed[nxx][nyy][index].juvY<<"     "
-							<<indiv.Breed[nxx][nyy][index].unmated_females<<"     "
-							<<indiv.Breed[nxx][nyy][index].maleW<<"     "
-							<<indiv.Breed[nxx][nyy][index].maleY<<"     "
-							<<indiv.Breed[nxx][nyy][index].mate_W_rate<<"     "
-							<<indiv.Breed[nxx][nyy][index].mate_Y_rate<<"     "
-							<<indiv.Breed[nxx][nyy][index].status<<endl;
+					    int stat_ben;
+					    if (indiv.Breed[nxx][nyy][index].status == 'd') stat_ben = 1;
+                        else if (indiv.Breed[nxx][nyy][index].status == 'w') stat_ben = 2;
+                        else stat_ben = 3;
+
+						logfile<<dx*nxx+indiv.Breed[nxx][nyy][index].x<<","
+							<<dy*nyy+indiv.Breed[nxx][nyy][index].y<<","
+							<<indiv.Breed[nxx][nyy][index].juvX<<","
+							<<indiv.Breed[nxx][nyy][index].juvW<<","
+							<<indiv.Breed[nxx][nyy][index].juvY<<","
+							<<indiv.Breed[nxx][nyy][index].unmated_females<<","
+							<<indiv.Breed[nxx][nyy][index].maleW<<","
+							<<indiv.Breed[nxx][nyy][index].maleY<<","
+							<<indiv.Breed[nxx][nyy][index].mate_W_rate<<","
+							<<indiv.Breed[nxx][nyy][index].mate_Y_rate<<","
+							<<stat_ben<<endl;
 					};
 
 				};
@@ -1715,7 +1669,6 @@ uint32 CRandomMersenne::BRandom() {// Generate 32 random bits
 
 
 double CRandomMersenne::Random() {
-
    // Output random float number in the interval 0 <= x < 1
    union {float f; uint32 i[2];} convert; //Union allows one portion of the memory to be accessed as different data types.
    double ra=1.1;
@@ -1761,15 +1714,11 @@ double CRandomMersenne::Random() {
 int CRandomMersenne::IRandom(int min, int max) {
    // Output random integer in the interval min <= x <= max
    // Relative error on frequencies < 2^-32
-    rand_consi++;
-//    if (rand_consi % N_randtot == 0)rand_consi=0;
-
-
    if (max <= min) {
       if (max == min) return min; else return 0x80000000;
    }
    // Multiply interval with random and truncate
-   int r = int((max - min + 1) * r_tot[rand_consi]) + min;
+   int r = int((max - min + 1) * Random()) + min;
    if (r > max) r = max;
    return r;
 }
