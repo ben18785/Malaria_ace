@@ -1,6 +1,6 @@
 #include "DYHead.h"
 
-	double U=3000;// simulation is run in square of U by U
+	double U=1500;// simulation is run in square of U by U
 
 //-----------------------------------------------------Declare Global variables----------------------------------------------------------------------------------------------------------------------
 
@@ -29,6 +29,9 @@
     BreedSite first_non_release_heg; //The first Breedsite in the iteration which has Heg, and isn't the release point
     vector<double> first_x;
     vector<double> first_y;
+    int heg_largex;//These two variables store the large square number in which the HEG release occurred
+    int heg_largey;
+    int heg_index;
 
 	int main(void){
 
@@ -51,7 +54,7 @@
 			ti.N=1;
 			in.heg=1000;
 			in.dist='p';
-			in.heg_time=5;
+			in.heg_time=1;
 			in.num_sites=1;
 			pa.set=1;
 			in.JX=5000;
@@ -248,7 +251,7 @@ cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "
 	    while(T<interval)
 		    {
 			dt=OneStep();
-			av_d = average_heg_dist();
+			av_d = average_heg_dist_toroidal();
 			av_dist.push_back(av_d);
 			n_time++;
 			T_abs+=dt;
@@ -262,11 +265,18 @@ cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "
                 	os<<"Average distance"<<pa.set<<".csv";
                     dist_new.open(os.str().c_str());// Open distance file
 
+                double heg_absolutex, heg_absolutey;
+                heg_absolutex = heg_release.x + dx*heg_largex;
+                heg_absolutey = heg_release.y + dy*heg_largey;
+
                 for (int i = 0; i < n_time; i++)
                     {
-                        dist_new <<i<<","<<T_vec[i]<<","<<heg_release.x<<","<<heg_release.y<<","<<first_x[i]<<","<<first_y[i]<<","<<num_heg[i]<<","<<av_dist[i]<<"\n";
+                        dist_new <<i<<","<<T_vec[i]<<","<<heg_absolutex<<","<<heg_absolutey<<","<<first_x[i]<<","<<first_y[i]<<","<<num_heg[i]<<","<<av_dist[i]<<"\n";
                     }
                     dist_new.close();os.str("");
+
+
+
                 exit(1);// abort if simulation exceeds alloted real time
 		    }
 		    }
@@ -424,9 +434,10 @@ cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "
 		if(rg.Random()*cell.O_ovi[xi][yi]<indiv.Ov[xi][yi][ind].larv_hab)test=1;
 		};
 
-		//------------------- Following part of function selects a breedsite from those breeding sites within detection distance (pa.LB) of choosen individual--------------------------
+		//------------------- Following part of function selects a breedsite from those breeding sites within detection distance (pa.LB) of chosen individual--------------------------
 
-		double ra=indiv.Ov[xi][yi][ind].larv_hab*rg.Random();// find a patch containing ind
+		double ra=indiv.Ov[xi][yi][ind].larv_hab*rg.Random();// For the individual ovipositer, get their value of 'larv_hab' and
+		// multiply this by a number which is between (0,1).
 		int pxx,pyy,index;
 		double dx1,dx2,dy1,dy2;
 		int runpat=0;
@@ -434,7 +445,12 @@ cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "
 		while(k<3 && ra>runpat)
 		{
 			while(kk<3 && ra> runpat)
-			{
+			{       //This piece of code iterates through all the possible combinations of large square to large square comparisons
+                    //and  then calculates the distance between the Ovipositers and the breeding sites,
+                    //Incrementing the count of runpat (the number within a radius if pa.LB)
+                    //by one if that is true.
+                    //The use of modulo here is just to get all the comparisons between neighbouring (and toroidally neighbouring)
+                    // large squares.
 			      if(k==0){pxx=modulo(xi-1,'X'); dx1=0;dx2=dx;};
 			      if(k==1){pxx=xi;dx1=0;dx2=0;};
 			      if(k==2){pxx=modulo(xi+1,'X');dx1=dx;dx2=0;};
@@ -442,7 +458,7 @@ cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "
 			      if(kk==1){pyy=yi;dy1=0;dy2=0;};
 			      if(kk==2){pyy=modulo(yi+1,'Y');dy1=dy;dy2=0;};
 				index=0;
-				while(index<cell.Breed[pxx][pyy] && ra> runpat)
+				while(index<cell.Breed[pxx][pyy] && ra> runpat)//Iterate through all the breeding sites in that particular large square
 				  {
 				  if(indiv.Breed[pxx][pyy][index].status!='d' &&
 						  dist(dx1+indiv.Breed[pxx][pyy][index].x, dy1+indiv.Breed[pxx][pyy][index].y, dx2+indiv.Ov[xi][yi][ind].x, dy2+indiv.Ov[xi][yi][ind].y)-pa.LB<0)runpat++;
@@ -1503,8 +1519,11 @@ int* SelectEggs (char gen)
 //            cout<<"The absolute x and y for the release of HEG are: "<<indiv.Breed[xi][yi][ind].x + dx*xi<<"      "<<indiv.Breed[xi][yi][ind].y + dy*yi<<"\n";
 
             //Store the details of the x and y coordinates as parts of a Breedsite struct
-            heg_release.x = indiv.Breed[xi][yi][ind].x + dx*xi;
-            heg_release.y = indiv.Breed[xi][yi][ind].y + dy*yi;
+            heg_release.x = indiv.Breed[xi][yi][ind].x;
+            heg_release.y = indiv.Breed[xi][yi][ind].y;
+            heg_largex = xi;
+            heg_largey = yi;
+            heg_index = ind;
 
 			indiv.Breed[xi][yi][ind].maleY+=num;
 			cell.Ma[xi][yi]+=num;
@@ -1779,9 +1798,10 @@ int CRandomMersenne::IRandom(int min, int max) {
 //It returns an average distance of the breedsites from the release point
 double average_heg_dist ()
 {
-    double av_dist;
+    double average_dist;
     double total_distance = 0;
     double total_hegsites = 0;
+
     for (int xi = 0; xi < nx; xi++)
     {
         for (int yi = 0; yi < ny; yi++)
@@ -1800,14 +1820,74 @@ double average_heg_dist ()
     }
     if (total_hegsites > 0)
     {
-        av_dist = total_distance/total_hegsites;
+        average_dist = total_distance/total_hegsites;
     }
     else
     {
-        av_dist = 0;
+        average_dist = 0;
     }
     first_x.push_back(first_non_release_heg.x);
     first_y.push_back(first_non_release_heg.y);
     num_heg.push_back(total_hegsites);
-    return av_dist;
+    return average_dist;
+}
+
+double average_heg_dist_toroidal()
+{
+    double average_dist;
+    int xi, yi;
+    xi = heg_largex;
+    yi = heg_largey;
+    int pxx,pyy,index;
+    double dx1,dx2,dy1,dy2;
+    double total_distance = 0;
+    int k=0;int kk=0;
+    int heg_count = 0;
+    while(k<3)
+    {
+        while(kk<3)
+        {       //This piece of code iterates through all the possible combinations of large square to large square comparisons
+                //and  then calculates the distance between the Ovipositers and the breeding sites,
+                //Incrementing the count of runpat (the number within a radius if pa.LB)
+                //by one if that is true.
+                //The use of modulo here is just to get all the comparisons between neighbouring (and toroidally neighbouring)
+                // large squares.
+              if(k==0){pxx=modulo(xi-1,'X'); dx1=0;dx2=dx;};
+              if(k==1){pxx=xi;dx1=0;dx2=0;};
+              if(k==2){pxx=modulo(xi+1,'X');dx1=dx;dx2=0;};
+              if(kk==0){pyy=modulo(yi-1,'Y');dy1=0;dy2=dy;};
+              if(kk==1){pyy=yi;dy1=0;dy2=0;};
+              if(kk==2){pyy=modulo(yi+1,'Y');dy1=dy;dy2=0;};
+            index=0;
+            while(index<cell.Breed[pxx][pyy])//Iterate through all the breeding sites in that particular large square
+              {
+                  if((indiv.Breed[pxx][pyy][index].maleY > 0) and (xi != pxx) and (yi != pyy) and (index != heg_index))
+                  {
+                        total_distance+=dist(dx1+indiv.Breed[pxx][pyy][index].x, dy1+indiv.Breed[pxx][pyy][index].y, dx2+heg_release.x, dy2+heg_release.y);
+                        heg_count++;
+                        first_non_release_heg.x = indiv.Breed[pxx][pyy][index].x + dx*pxx;
+                        first_non_release_heg.y = indiv.Breed[pxx][pyy][index].y + dy*pyy;
+                  }
+
+
+                    index++;
+                };
+            kk++;
+        };
+        k++;
+        kk=0;
+    };
+    if(heg_count > 0)
+    {
+          average_dist = total_distance/heg_count;
+    }
+    else
+    {
+        average_dist = 0;
+    }
+    first_x.push_back(first_non_release_heg.x);
+    first_y.push_back(first_non_release_heg.y);
+    num_heg.push_back(heg_count);
+
+    return average_dist;
 }
