@@ -47,14 +47,14 @@
             //in is an example of the 'initials' struct which contains initial conditions
             // pa is an instance of 'Pars' - container for various parameters involved in the simulation.
             ti.interval=1;
-			ti.totalruntime=10;
+			ti.totalruntime=100;
 			ti.maxT=300;
 			ti.rec=400;
 			ti.landscape_initiation=50;
 			ti.N=1;
 			in.heg=1000;
 			in.dist='p';
-			in.heg_time=1;
+			in.heg_time=50;
 			in.num_sites=1;
 			pa.set=1;
 			in.JX=5000;
@@ -221,8 +221,13 @@
 		int swit=0;
 		while (TT<ti.maxT)//loop for running between one time interval
 			{ //Record the various totals of different species to the consol
-cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;//write global densiies into output
-			run<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;//write global densiies into output
+//cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;//write global densiies into output
+//			run<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;//write global densiies into output
+			if (n_time>0)
+            {
+                int tot_breed = to.Breed_d + to.Breed_e + to.Breed_w;
+                cout<<T_abs<<"   "<<av_dist[n_time-1]<<"   "<<num_heg[n_time-1]<<"   "<<tot_breed<<"\n";
+                }
 			TT+=ti.interval;
 			TTT+=ti.interval;
 			if(swit==0 && TT>in.heg_time && to.J>0)
@@ -262,18 +267,18 @@ cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "
                 cout<<"The number of time steps taken was: "<<n_time<<"\n";
 
                 	//Now Ben code to print out the average distances of release sites
-                	os<<"Average distance"<<pa.set<<".csv";
-                    dist_new.open(os.str().c_str());// Open distance file
-
-                double heg_absolutex, heg_absolutey;
-                heg_absolutex = heg_release.x + dx*heg_largex;
-                heg_absolutey = heg_release.y + dy*heg_largey;
-
-                for (int i = 0; i < n_time; i++)
-                    {
-                        dist_new <<i<<","<<T_vec[i]<<","<<heg_absolutex<<","<<heg_absolutey<<","<<first_x[i]<<","<<first_y[i]<<","<<num_heg[i]<<","<<av_dist[i]<<"\n";
-                    }
-                    dist_new.close();os.str("");
+//                	os<<"Average distance"<<pa.set<<".csv";
+//                    dist_new.open(os.str().c_str());// Open distance file
+//
+//                double heg_absolutex, heg_absolutey;
+//                heg_absolutex = heg_release.x + dx*heg_largex;
+//                heg_absolutey = heg_release.y + dy*heg_largey;
+//
+//                for (int i = 0; i < n_time; i++)
+//                    {
+//                        dist_new <<i<<","<<T_vec[i]<<","<<heg_absolutex<<","<<heg_absolutey<<","<<first_x[i]<<","<<first_y[i]<<","<<num_heg[i]<<","<<av_dist[i]<<"\n";
+//                    }
+//                    dist_new.close();os.str("");
 
 
 
