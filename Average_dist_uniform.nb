@@ -1,0 +1,127 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 9.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[      3564,        118]
+NotebookOptionsPosition[      3062,         96]
+NotebookOutlinePosition[      3405,        111]
+CellTagsIndexPosition[      3362,        108]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "This", " ", "is", " ", "a", " ", "script", " ", "that", " ", "will", " ", 
+    "calculate", " ", "the", " ", "average", " ", "distance", " ", "of", " ", 
+    "points", " ", "on", " ", "a", " ", "2", "D", " ", "square", " ", 
+    "surface", " ", "from", " ", "its", " ", 
+    RowBox[{"center", ".", " ", "Since"}], " ", "We", " ", "are", " ", 
+    "using", " ", "a", " ", "toroidal", " ", "surface", " ", "this", " ", 
+    "will", " ", "be", " ", "independent", " ", "of", " ", "whether", " ", 
+    "we", " ", "use", " ", "the", " ", "center", " ", "or", " ", "an", " ", 
+    "arbitrary", " ", 
+    RowBox[{"point", ".", " ", "But"}], " ", "it", " ", "is", " ", "easier", 
+    " ", "with", " ", "using", " ", "the", " ", 
+    RowBox[{"center", "."}]}], "*)"}], "\[IndentingNewLine]", 
+  "\[IndentingNewLine]", 
+  RowBox[{"r", " ", "=", " ", 
+   RowBox[{"Integrate", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"1", "/", 
+        RowBox[{"(", 
+         RowBox[{"1500", "^", "2"}], ")"}]}], ")"}], 
+      RowBox[{"Sqrt", "[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"750", "-", "x"}], ")"}], "^", "2"}], " ", "+", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"750", " ", "-", " ", "y"}], ")"}], "^", "2"}]}], "]"}]}], 
+     ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", "0", ",", "1500"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"y", ",", "0", ",", "1500"}], "}"}]}], "]"}], " "}]}]], "Input",
+ CellChangeTimes->{{3.6049277457111855`*^9, 3.604927872422433*^9}, {
+  3.604927946285658*^9, 3.6049280126274524`*^9}, {3.604928062855325*^9, 
+  3.6049280708007793`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"250", " ", 
+  RowBox[{"(", 
+   RowBox[{
+    SqrtBox["2"], "+", 
+    RowBox[{"ArcSinh", "[", "1", "]"}]}], ")"}]}]], "Output",
+ CellChangeTimes->{{3.6049280290283904`*^9, 3.604928040313036*^9}, 
+   3.60492808252645*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"N", "[", 
+  RowBox[{"250", " ", 
+   RowBox[{"(", 
+    RowBox[{
+     SqrtBox["2"], "+", 
+     RowBox[{"ArcSinh", "[", "1", "]"}]}], ")"}]}], "]"}]], "Input",
+ NumberMarks->False],
+
+Cell[BoxData["573.8967873481595`"], "Output",
+ CellChangeTimes->{3.604928109420988*^9}]
+}, Open  ]],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{3.6049281291921196`*^9},
+ NumberMarks->False],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.604928132261295*^9, 3.604928132312298*^9}}]
+},
+WindowSize->{707, 505},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
+FrontEndVersion->"9.0 for Microsoft Windows (64-bit) (November 20, 2012)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[579, 22, 1705, 40, 172, "Input"],
+Cell[2287, 64, 242, 7, 36, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2566, 76, 201, 7, 39, "Input"],
+Cell[2770, 85, 87, 1, 63, "Output"]
+}, Open  ]],
+Cell[2872, 89, 91, 2, 31, "Input"],
+Cell[2966, 93, 92, 1, 31, InheritFromParent]
+}
+]
+*)
+
+(* End of internal cache information *)
