@@ -11,7 +11,7 @@
 	Individuals indiv;//indiv is an array of nx by ny structs, each struct corresponds to a particular large square and is a set of vectors, each vector is a list of the individuals in a given class, e.g. HostSeekers
 	PerCell cell; //cell is an array of nx by ny structs, each struct contains the total of each entity type for the given square
 	totals to; //struct of the global totals of each entity type
-	ostringstream os;ofstream run,param,dist_new;// for writing output files
+	ostringstream os;ofstream param,run;// for writing output files
 	Times ti;// simulation time parameters
 	std::clock_t star;//start absolute time
 	double totalruntime;
@@ -19,28 +19,7 @@
 	int N;// how simulation many replicates to run
 	double landscape_initiation =0;// how long to run the landscape dynamics pre-mosquitoes. This only needs to be done if there is feedsite/breedsite covariance (rho not=1)
 
-    //Ben's introduced parameters
-    BreedSite heg_release; //Keep track of the breedsite where the HEG is released
-    vector<double> av_dist; //A vector which will hold the average distance of breedsites containing Y males from the release
-    int n_time = 0; //This keeps track of the total number of time steps taken
-    double T_abs = 0; //This keeps track of absolute time
-    vector<double> T_vec; //Hold the values of T_abs
-    vector<int> num_heg;
-    BreedSite first_non_release_heg; //The first Breedsite in the iteration which has Heg, and isn't the release point
-    vector<double> first_x;
-    vector<double> first_y;
-    int heg_largex;//These two variables store the large square number in which the HEG release occurred
-    int heg_largey;
-    int heg_index;
-
 	int main(void){
-
-            //Ben's variable
-            first_non_release_heg.x = 0;
-            first_non_release_heg.y = 0;
-            heg_release.x = 0;
-            heg_release.y = 0;
-
 
             //Definition of parameters used in model. They are all defined to belong to a struct.
             // ti is an instance of a 'Times' struct. It contains all the parameters necessary for simulation time
@@ -49,7 +28,7 @@
             ti.interval=1;
 			ti.totalruntime=100;
 			ti.maxT=300;
-			ti.rec=400;
+			ti.rec=1;
 			ti.landscape_initiation=50;
 			ti.N=1;
 			in.heg=1000;
@@ -151,7 +130,7 @@
             cout<<"The value of nx is: "<<nx<<"\n";
 			in.Breed=pa.thetaB;//this is the equilibrium density of breeding sites
 			dx=pa.U/(double)nx;//x_length of a gridcell
-			dy=pa.U/(double)ny;//y_length of a gridcell
+			dy=pa.U/(double)ny;//x_length of a gridcell
 			star = std::clock();// set star = clock time of now
 
             cout<<"The value of U is: "<<pa.U<<"\n";
@@ -192,12 +171,10 @@
 			param.close();
 			os.str("");
 
-//            os<<"Results"<<pa.set<<".txt";
-//            run.open(os.str().c_str());// Use this if want to write output to file instead of cout
+            os<<"Results"<<pa.set<<".txt";
+            run.open(os.str().c_str());// Use this if want to write output to file instead of cout
 			RunNReps(ti.N);
-//			run.close();os.str("");
-
-
+			run.close();os.str("");
 		return 0;};
 
 
@@ -211,7 +188,6 @@
 			cout<<"Running RunMaxT"<<"\n";
 			RunMaxT(i);
 		};
-
 		return;};
 
 	void RunMaxT(int i)//Run 1 replicate
@@ -221,13 +197,8 @@
 		int swit=0;
 		while (TT<ti.maxT)//loop for running between one time interval
 			{ //Record the various totals of different species to the consol
-//cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;//write global densiies into output
-//			run<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;//write global densiies into output
-			if (n_time>0)
-            {
-                int tot_breed = to.Breed_d + to.Breed_e + to.Breed_w;
-                cout<<T_abs<<"   "<<av_dist[n_time-1]<<"   "<<num_heg[n_time-1]<<"   "<<tot_breed<<"\n";
-                }
+cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;//write global densiies into output
+			run<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;//write global densiies into output
 			TT+=ti.interval;
 			TTT+=ti.interval;
 			if(swit==0 && TT>in.heg_time && to.J>0)
@@ -243,7 +214,6 @@
 			RunOnceInt(ti.interval);
 			};
 cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;
-
 	return;};
 
 
@@ -252,39 +222,12 @@ cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "
 	    double T;
 	    T=0;
 	    double dt;
-	    double av_d;
 	    while(T<interval)
 		    {
 			dt=OneStep();
-			av_d = average_heg_dist_toroidal();
-			av_dist.push_back(av_d);
-			n_time++;
-			T_abs+=dt;
-			T_vec.push_back(T_abs);
 			T+=dt;
-			if((std::clock() - star)/ (double)CLOCKS_PER_SEC>ti.totalruntime)
-            {
-                cout<<"The number of time steps taken was: "<<n_time<<"\n";
-
-                	//Now Ben code to print out the average distances of release sites
-//                	os<<"Average distance"<<pa.set<<".csv";
-//                    dist_new.open(os.str().c_str());// Open distance file
-//
-//                double heg_absolutex, heg_absolutey;
-//                heg_absolutex = heg_release.x + dx*heg_largex;
-//                heg_absolutey = heg_release.y + dy*heg_largey;
-//
-//                for (int i = 0; i < n_time; i++)
-//                    {
-//                        dist_new <<i<<","<<T_vec[i]<<","<<heg_absolutex<<","<<heg_absolutey<<","<<first_x[i]<<","<<first_y[i]<<","<<num_heg[i]<<","<<av_dist[i]<<"\n";
-//                    }
-//                    dist_new.close();os.str("");
-
-
-
-                exit(1);// abort if simulation exceeds alloted real time
-		    }
-		    }
+			if((std::clock() - star)/ (double)CLOCKS_PER_SEC>ti.totalruntime)exit(1);// abort if simulation exceeds alloted real time
+		    };
 	return;}
 
 
@@ -439,10 +382,9 @@ cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "
 		if(rg.Random()*cell.O_ovi[xi][yi]<indiv.Ov[xi][yi][ind].larv_hab)test=1;
 		};
 
-		//------------------- Following part of function selects a breedsite from those breeding sites within detection distance (pa.LB) of chosen individual--------------------------
+		//------------------- Following part of function selects a breedsite from those breeding sites within detection distance (pa.LB) of choosen individual--------------------------
 
-		double ra=indiv.Ov[xi][yi][ind].larv_hab*rg.Random();// For the individual ovipositer, get their value of 'larv_hab' and
-		// multiply this by a number which is between (0,1).
+		double ra=indiv.Ov[xi][yi][ind].larv_hab*rg.Random();// find a patch containing ind
 		int pxx,pyy,index;
 		double dx1,dx2,dy1,dy2;
 		int runpat=0;
@@ -450,12 +392,7 @@ cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "
 		while(k<3 && ra>runpat)
 		{
 			while(kk<3 && ra> runpat)
-			{       //This piece of code iterates through all the possible combinations of large square to large square comparisons
-                    //and  then calculates the distance between the Ovipositers and the breeding sites,
-                    //Incrementing the count of runpat (the number within a radius if pa.LB)
-                    //by one if that is true.
-                    //The use of modulo here is just to get all the comparisons between neighbouring (and toroidally neighbouring)
-                    // large squares.
+			{
 			      if(k==0){pxx=modulo(xi-1,'X'); dx1=0;dx2=dx;};
 			      if(k==1){pxx=xi;dx1=0;dx2=0;};
 			      if(k==2){pxx=modulo(xi+1,'X');dx1=dx;dx2=0;};
@@ -463,7 +400,7 @@ cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "
 			      if(kk==1){pyy=yi;dy1=0;dy2=0;};
 			      if(kk==2){pyy=modulo(yi+1,'Y');dy1=dy;dy2=0;};
 				index=0;
-				while(index<cell.Breed[pxx][pyy] && ra> runpat)//Iterate through all the breeding sites in that particular large square
+				while(index<cell.Breed[pxx][pyy] && ra> runpat)
 				  {
 				  if(indiv.Breed[pxx][pyy][index].status!='d' &&
 						  dist(dx1+indiv.Breed[pxx][pyy][index].x, dy1+indiv.Breed[pxx][pyy][index].y, dx2+indiv.Ov[xi][yi][ind].x, dy2+indiv.Ov[xi][yi][ind].y)-pa.LB<0)runpat++;
@@ -1518,18 +1455,6 @@ int* SelectEggs (char gen)
 				ind=rg.IRandom(0,cell.Breed[xi][yi]-1);
 				if(indiv.Breed[xi][yi][ind].status=='w')test=1;
 			    };
-
-//            cout<<"The chosen large square for the release of HEG is: "<<xi<<"    "<<yi<<"\n";
-//            cout<<"The relative x and y coordinates for the release of HEG are: "<<indiv.Breed[xi][yi][ind].x<<"     "<<indiv.Breed[xi][yi][ind].y<<"\n";
-//            cout<<"The absolute x and y for the release of HEG are: "<<indiv.Breed[xi][yi][ind].x + dx*xi<<"      "<<indiv.Breed[xi][yi][ind].y + dy*yi<<"\n";
-
-            //Store the details of the x and y coordinates as parts of a Breedsite struct
-            heg_release.x = indiv.Breed[xi][yi][ind].x;
-            heg_release.y = indiv.Breed[xi][yi][ind].y;
-            heg_largex = xi;
-            heg_largey = yi;
-            heg_index = ind;
-
 			indiv.Breed[xi][yi][ind].maleY+=num;
 			cell.Ma[xi][yi]+=num;
 			to.M+=num;
@@ -1568,7 +1493,7 @@ int* SelectEggs (char gen)
 
 
 
-	void record(int T,Individuals& indiv,PerCell& cell)//make data file with breedsite spatial information
+	void record(int T,Individuals& indiv,PerCell& cell)//make data file with breedsite information
 	{
 	ostringstream os;
 	ofstream logfile;
@@ -1581,7 +1506,7 @@ int* SelectEggs (char gen)
 				{
 					for(int index=0;index<cell.Breed[nxx][nyy];index++)
 					{
-					    int stat_ben;//Introduced this statistic so that I can output the column as .csv (as .csv cannot handle string)
+					    int stat_ben;
 					    if (indiv.Breed[nxx][nyy][index].status == 'd') stat_ben = 1;
                         else if (indiv.Breed[nxx][nyy][index].status == 'w') stat_ben = 2;
                         else stat_ben = 3;
@@ -1796,103 +1721,4 @@ int CRandomMersenne::IRandom(int min, int max) {
    int r = int((max - min + 1) * Random()) + min;
    if (r > max) r = max;
    return r;
-}
-
-
-//Ben's function to calculate the distance between each Breedsite which contains Heg Males and the release site
-//It returns an average distance of the breedsites from the release point
-double average_heg_dist ()
-{
-    double average_dist;
-    double total_distance = 0;
-    double total_hegsites = 0;
-
-    for (int xi = 0; xi < nx; xi++)
-    {
-        for (int yi = 0; yi < ny; yi++)
-        {
-            for (int k = 0; k < cell.Breed[xi][yi]; k++)
-            {
-                if((indiv.Breed[xi][yi][k].maleY > 0) and (indiv.Breed[xi][yi][k].x + dx*xi != heg_release.x) and (indiv.Breed[xi][yi][k].y + dy*yi != heg_release.y))
-                    {
-                        total_hegsites++;
-                        first_non_release_heg.x = indiv.Breed[xi][yi][k].x + dx*xi;
-                        first_non_release_heg.y = indiv.Breed[xi][yi][k].y + dy*yi;
-                        total_distance += dist(indiv.Breed[xi][yi][k].x + dx*xi,indiv.Breed[xi][yi][k].y, heg_release.x,heg_release.y);
-                    }
-            }
-        }
-    }
-    if (total_hegsites > 0)
-    {
-        average_dist = total_distance/total_hegsites;
-    }
-    else
-    {
-        average_dist = 0;
-    }
-    first_x.push_back(first_non_release_heg.x);
-    first_y.push_back(first_non_release_heg.y);
-    num_heg.push_back(total_hegsites);
-    return average_dist;
-}
-
-double average_heg_dist_toroidal()
-{
-    double average_dist;
-    int xi, yi;
-    xi = heg_largex;
-    yi = heg_largey;
-    int pxx,pyy,index;
-    double dx1,dx2,dy1,dy2;
-    double total_distance = 0;
-    int k=0;int kk=0;
-    int heg_count = 0;
-    while(k<3)
-    {
-        while(kk<3)
-        {       //This piece of code iterates through all the possible combinations of large square to large square comparisons
-                //and  then calculates the distance between the Ovipositers and the breeding sites,
-                //Incrementing the count of runpat (the number within a radius if pa.LB)
-                //by one if that is true.
-                //The use of modulo here is just to get all the comparisons between neighbouring (and toroidally neighbouring)
-                // large squares.
-              if(k==0){pxx=modulo(xi-1,'X'); dx1=0;dx2=dx;};
-              if(k==1){pxx=xi;dx1=0;dx2=0;};
-              if(k==2){pxx=modulo(xi+1,'X');dx1=dx;dx2=0;};
-              if(kk==0){pyy=modulo(yi-1,'Y');dy1=0;dy2=dy;};
-              if(kk==1){pyy=yi;dy1=0;dy2=0;};
-              if(kk==2){pyy=modulo(yi+1,'Y');dy1=dy;dy2=0;};
-            index=0;
-            while(index<cell.Breed[pxx][pyy])//Iterate through all the breeding sites in that particular large square
-              {
-                  if((indiv.Breed[pxx][pyy][index].maleY > 0) and (xi != pxx) and (yi != pyy) and (index != heg_index))
-                  {
-                        total_distance+=dist(dx1+indiv.Breed[pxx][pyy][index].x, dy1+indiv.Breed[pxx][pyy][index].y, dx2+heg_release.x, dy2+heg_release.y);
-                        heg_count++;
-                        first_non_release_heg.x = indiv.Breed[pxx][pyy][index].x + dx*pxx;
-                        first_non_release_heg.y = indiv.Breed[pxx][pyy][index].y + dy*pyy;
-                  }
-
-
-                    index++;
-                };
-            kk++;
-        };
-        k++;
-        kk=0;
-    };
-    if(heg_count > 0)
-    {
-          average_dist = total_distance/heg_count;
-    }
-    else
-    {
-        average_dist = 0;
-    }
-    first_x.push_back(first_non_release_heg.x);
-    first_y.push_back(first_non_release_heg.y);
-    num_heg.push_back(heg_count);
-
-    return average_dist;
 }
