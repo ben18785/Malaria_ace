@@ -23,6 +23,8 @@ using namespace std;
 
 const double PI=3.14159265;
 
+
+
 	struct totals //A container for the global totals of all the various entities involved in the simulation.
 	{
 		int J;
@@ -44,6 +46,7 @@ const double PI=3.14159265;
 		double house_dense;
 		int samples;
 	};
+
 
 	struct initials //Initial conditions, set values in main
 	{
@@ -128,7 +131,7 @@ const double PI=3.14159265;
 		double H_move[nx][ny];
 		double O_move[nx][ny];
 		int H_gam[nx][ny];
-	       	int O_ovi[nx][ny];
+        int O_ovi[nx][ny];
 	};
 
 	struct Times //Contains all the parameters necessary for simulation time
@@ -147,6 +150,28 @@ struct Pars // Container for various parameters involved in the simulation.
 		double thetaC,sigmaC,rho;
 		int set;
 	};
+
+
+    //A struct to hold a breedsite (which holds Heg) along with the coordinates of the large square it is in.
+	struct Breedsite_plus
+	{
+        int x_abs, y_abs; //Store this information as we need it!
+	};
+
+    //Ben Struct to hold vector of breedsite_plus and the number of breedsites at each time step
+    struct heg_vector
+    {
+        int number_heg;
+        vector<Breedsite_plus> heg_vec;
+    };
+
+    //Vector of heg_vectors which holds the information of the Heg breedsites at all times
+    struct Heg_breedsites
+    {
+
+        vector<heg_vector> heg_holder;
+
+    };
 
 //---------------------------------Functions in simulation code---------------------------------------------------------
 		void RunOnceInt(double);
@@ -191,6 +216,10 @@ struct Pars // Container for various parameters involved in the simulation.
 		int pick(double*,int,double);
 	   	int* pick2Ddub(double[][ny],double);
 		int* pick2D(int[][ny],int);
+
+		//Ben function
+		double average_heg_dist();
+		double average_heg_dist_toroidal();
 
 //------------------------------------------------------------------------------------------------------------------------------
 
