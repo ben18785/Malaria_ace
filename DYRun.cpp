@@ -231,7 +231,7 @@
                     cout<<TT<<"   "<<n_time<<"     "<<heg_all.heg_holder[n_time-1].number_heg<<"\n";
                     for (int i=0; i < heg_all.heg_holder[n_time-1].number_heg; i++)
                     {
-                        dist_new<<TT<<","<<n_time-1<<","<<heg_release.x+heg_largex*dx<<","<<heg_release.y+heg_largey*dy<<","<<av_dist[n_time-1]<<","<<heg_all.heg_holder[n_time-1].heg_vec[i].x_abs<<","<<heg_all.heg_holder[n_time-1].heg_vec[i].y_abs<<"\n";
+                        dist_new<<TT<<","<<n_time-1<<","<<heg_release.x+heg_largex*dx<<","<<heg_release.y+heg_largey*dy<<","<<av_dist[n_time-1]<<","<<heg_all.heg_holder[n_time-1].heg_vec[i].distance_to_release<<","<<heg_all.heg_holder[n_time-1].heg_vec[i].x_abs<<","<<heg_all.heg_holder[n_time-1].heg_vec[i].y_abs<<"\n";
                     }
 
             }
@@ -1876,7 +1876,8 @@ double average_heg_dist_toroidal()
               {
                   if((indiv.Breed[pxx][pyy][index].maleY > 0) and (xi != pxx) and (yi != pyy) and (index != heg_index))
                   {
-                        total_distance+=dist(dx1+indiv.Breed[pxx][pyy][index].x, dy1+indiv.Breed[pxx][pyy][index].y, dx2+heg_release.x, dy2+heg_release.y);
+                        BS_plus.distance_to_release = distance_to_release(heg_release.x+heg_largex*dx,heg_release.y+heg_largey*dy,dx*pxx+indiv.Breed[pxx][pyy][index].x,dy*pyy+indiv.Breed[pxx][pyy][index].y);//dist(dx1+indiv.Breed[pxx][pyy][index].x, dy1+indiv.Breed[pxx][pyy][index].y, dx2+heg_release.x, dy2+heg_release.y);
+                        total_distance+=BS_plus.distance_to_release;
                         heg_count++;
                         first_non_release_heg.x = indiv.Breed[pxx][pyy][index].x + dx*pxx;
                         first_non_release_heg.y = indiv.Breed[pxx][pyy][index].y + dy*pyy;
@@ -1909,3 +1910,76 @@ double average_heg_dist_toroidal()
 
     return average_dist;
 }
+
+// A function which takes the absolute x and y and returns the minimum distance to the heg release stie
+double distance_to_release(double x, double y, int x_breed, int y_breed)
+{
+    double x_start = (double) x_breed;
+    double y_start = (double) y_breed;
+    double xdistance_1, xdistance_2, xdistance_3;
+    double ydistance_1, ydistance_2, ydistance_3;
+
+    xdistance_1 = x - x_start;
+    xdistance_2 = U - x + x_start;
+    xdistance_3 = U - x_start + x;
+
+    ydistance_1 = y - y_start;
+    ydistance_2 = U - y + y_start;
+    ydistance_3 = U - y_start + y;
+
+
+    xdistance_1 = absolute(xdistance_1);
+    xdistance_2 = absolute(xdistance_2);
+    xdistance_3 = absolute(xdistance_3);
+
+    ydistance_1 = absolute(ydistance_1);
+    ydistance_2 = absolute(ydistance_2);
+    ydistance_3 = absolute(ydistance_3);
+
+
+
+
+    double x_min, y_min;
+    x_min = minimiser(xdistance_1,xdistance_2,xdistance_3);
+    y_min = minimiser(ydistance_1,ydistance_2,ydistance_3);
+
+
+    double distance_min;
+    distance_min = (double) sqrt(x_min*x_min + y_min*y_min);
+
+    return distance_min;
+
+}
+
+double absolute(double x)
+{
+    double x_abs;
+    x_abs = x;
+    if (x < 0)
+    {
+        x_abs = -1*x;
+    }
+
+    return x_abs;
+}
+
+double minimiser(double x_1, double x_2, double x_3)
+{
+    double x_min;
+    x_min = 1e9;
+    if (x_1 < x_min)
+    {
+        x_min = x_1;
+    }
+    if (x_2 < x_min)
+    {
+        x_min = x_2;
+    }
+    if (x_3 < x_min)
+    {
+        x_min = x_3;
+    }
+    return x_min;
+
+}
+

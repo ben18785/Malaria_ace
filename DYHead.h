@@ -156,6 +156,7 @@ struct Pars // Container for various parameters involved in the simulation.
 	struct Breedsite_plus
 	{
         int x_abs, y_abs; //Store this information as we need it!
+        double distance_to_release;
 	};
 
     //Ben Struct to hold vector of breedsite_plus and the number of breedsites at each time step
@@ -220,6 +221,9 @@ struct Pars // Container for various parameters involved in the simulation.
 		//Ben function
 		double average_heg_dist();
 		double average_heg_dist_toroidal();
+		double distance_to_release(double x, double y, int x_breed, int y_breed);
+		double absolute(double x);
+		double minimiser(double x_1, double x_2, double x_3);
 
 //------------------------------------------------------------------------------------------------------------------------------
 
