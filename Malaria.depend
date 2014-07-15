@@ -1,0 +1,23 @@
+# depslib dependency file v1.0
+1394713844 source:c:\users\ben\desktop\malaria\malaria\dyparam.cpp
+	"DYHead.h"
+
+1396264485 c:\users\ben\desktop\malaria\malaria\dyhead.h
+	<iostream>
+	<fstream>
+	<stdlib.h>
+	<sstream>
+	<math.h>
+	<time.h>
+	<vector>
+	<assert.h>
+	<stdio.h>
+	<ctime>
+	<cstdlib>
+
+1396277524 source:c:\users\ben\desktop\malaria\malaria\dyrun.cpp
+	"DYHead.h"
+
+1394810438 source:c:\users\ben\desktop\malaria\malaria\test.cpp
+	"DYHead.h"
+

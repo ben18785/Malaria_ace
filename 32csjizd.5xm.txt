@@ -1,0 +1,36 @@
+﻿
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch wave
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	modified:   DYHead.h
+#	modified:   DYRun.cpp
+#	new file:   Distance_coordinates1.csv
+#
+# Changes not staged for commit:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#	modified:   working_file1.m
+#
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#	Basic_plotter.nb
+#	Data_plotter.m
+#	Distance_tester.xlsx
+#	Malaria.depend
+#	Malaria.layout
+#	Par1.txt
+#	Param1.txt
+#	Results1.txt
+#	Simulation results holder/
+#	Spatial_plotter.m
+#	bin/
+#	malaria_sleepy_profile.sleepy
+#	obj/
+#	ov_results1.txt
+#	~$Distance_tester.xlsx
+

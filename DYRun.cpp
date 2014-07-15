@@ -228,11 +228,11 @@
 
             if (n_time > 0)
             {
-                    cout<<TT<<"   "<<n_time<<"     "<<heg_all.heg_holder[n_time-1].number_heg<<"\n";
-                    for (int i=0; i < heg_all.heg_holder[n_time-1].number_heg; i++)
-                    {
-                        dist_new<<TT<<","<<n_time-1<<","<<heg_release.x+heg_largex*dx<<","<<heg_release.y+heg_largey*dy<<","<<av_dist[n_time-1]<<","<<heg_all.heg_holder[n_time-1].heg_vec[i].distance_to_release<<","<<heg_all.heg_holder[n_time-1].heg_vec[i].x_abs<<","<<heg_all.heg_holder[n_time-1].heg_vec[i].y_abs<<"\n";
-                    }
+                    cout<<TT<<"   "<<n_time<<"     "<<heg_all.heg_holder[n_time-1].number_heg<<"    "<<av_dist[n_time-1]<<"\n";
+//                    for (int i=0; i < heg_all.heg_holder[n_time-1].number_heg; i++)
+//                    {
+//                        dist_new<<TT<<","<<n_time-1<<","<<heg_release.x+heg_largex*dx<<","<<heg_release.y+heg_largey*dy<<","<<av_dist[n_time-1]<<","<<heg_all.heg_holder[n_time-1].heg_vec[i].distance_to_release<<","<<heg_all.heg_holder[n_time-1].heg_vec[i].x_abs<<","<<heg_all.heg_holder[n_time-1].heg_vec[i].y_abs<<"\n";
+//                    }
 
             }
 
@@ -1848,7 +1848,6 @@ double average_heg_dist_toroidal()
     xi = heg_largex;
     yi = heg_largey;
     int pxx,pyy,index;
-    double dx1,dx2,dy1,dy2;
     double total_distance = 0;
     int k=0;int kk=0;
     int heg_count = 0;
@@ -1865,12 +1864,12 @@ double average_heg_dist_toroidal()
                 //by one if that is true.
                 //The use of modulo here is just to get all the comparisons between neighbouring (and toroidally neighbouring)
                 // large squares.
-              if(k==0){pxx=modulo(xi-1,'X'); dx1=0;dx2=dx;};
-              if(k==1){pxx=xi;dx1=0;dx2=0;};
-              if(k==2){pxx=modulo(xi+1,'X');dx1=dx;dx2=0;};
-              if(kk==0){pyy=modulo(yi-1,'Y');dy1=0;dy2=dy;};
-              if(kk==1){pyy=yi;dy1=0;dy2=0;};
-              if(kk==2){pyy=modulo(yi+1,'Y');dy1=dy;dy2=0;};
+              if(k==0){pxx=modulo(xi-1,'X');};
+              if(k==1){pxx=xi;};
+              if(k==2){pxx=modulo(xi+1,'X');};
+              if(kk==0){pyy=modulo(yi-1,'Y');};
+              if(kk==1){pyy=yi;};
+              if(kk==2){pyy=modulo(yi+1,'Y');};
             index=0;
             while(index<cell.Breed[pxx][pyy])//Iterate through all the breeding sites in that particular large square
               {

@@ -1,6 +1,6 @@
 clear; close all; clc;
 
-st_data = spatial_info('Par1T*');
+st_data = spatial_info('/Simulation results holder/Par1T*');
 num_files = length(st_data);
 
 for i = 1:num_files
@@ -16,6 +16,15 @@ for i = 1:num_files
     mate_W_rate = A(:,9);
     mate_Y_rate = A(:,10);
     status = A(:,11);
-    scatter(x,y)
-    pause(1)
+    % Define a colour vector to equal 1 if the number of juveniles is
+    % greater than zero. Multiply it by 800 to get red.
+    colour = 800*(juvY>0);
+    scatter(x,y,juvX+juvW+juvY+1,colour+1,'fill')
+    % This command sets the colour 'axis' scaling and allows one to keep it
+    % constant (rather than renormalising) between runs
+    caxis([1,1000])
+    time = num2str(st_data{i,2});
+    time = strcat('Time',{' '},'=',{' '},time);
+    title(time)
+    pause(0.1)
 end
