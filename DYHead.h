@@ -13,6 +13,7 @@
 #include <ctime>
 #include <cstdlib> // for exit function
 
+
 #ifndef RANDOMC_H
 #define RANDOMC_H
 
@@ -148,6 +149,7 @@ struct Pars // Container for various parameters involved in the simulation.
 	{
 		double omega,kappa,nu,alpha,gammaJ,gammaH,muJ,muU,muM,muH,muO,m,e,rH,betaH,rO,betaO,LM,LRH,LRO,Lrho,LA,LB,thetaA,thetaB,sigmaA,sigmaB,U;
 		double thetaC,sigmaC,rho;
+		double chiB, etaB, thetaB_mean; //All variables to do with the Ornstein-Uhlenbeck process
 		int set;
 	};
 
@@ -218,12 +220,9 @@ struct Pars // Container for various parameters involved in the simulation.
 	   	int* pick2Ddub(double[][ny],double);
 		int* pick2D(int[][ny],int);
 
-		//Ben function
-		double average_heg_dist();
-		double average_heg_dist_toroidal();
-		double distance_to_release(double x, double y, int x_breed, int y_breed);
-		double absolute(double x);
-		double minimiser(double x_1, double x_2, double x_3);
+		//Functions for rainfall seasonality
+		double OrsteinUhlenbeck(double, double);
+
 
 //------------------------------------------------------------------------------------------------------------------------------
 
