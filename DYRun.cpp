@@ -26,11 +26,11 @@
             //in is an example of the 'initials' struct which contains initial conditions
             // pa is an instance of 'Pars' - container for various parameters involved in the simulation.
             ti.interval=1;
-			ti.totalruntime=200;
+			ti.totalruntime=100;
 			ti.maxT=300;
 			ti.rec=500;
-			ti.landscape_initiation=50;
-			ti.N=1;
+			ti.landscape_initiation=300;
+			ti.N=100;
 			in.heg=1000;
 			in.dist='p';
 			in.heg_time=500;
@@ -74,9 +74,9 @@
 			pa.rho=1;
 
 
-            pa.thetaB_mean = 0.0001; // The mean of the Orstein-Uhlenbeck process
-//            pa.chiB = 1; // The rate of reversal to the mean of the Orstein-Uhlenbeck process for the breedsite theta
-//            pa.etaB = 1; // The magnitude of the error process
+            pa.thetaB_mean = pa.thetaB; // The mean of the Orstein-Uhlenbeck process
+//            pa.chiB = 0.0111; // The rate of reversal to the mean of the Orstein-Uhlenbeck process for the breedsite theta
+//            pa.etaB = 0.567; // The magnitude of the error process
 
             // Generate the necessary txt files with parameters
 //            parameter_txt_generator();
@@ -195,8 +195,19 @@
 			param.close();
 			os.str("");
 
-            os<<"/data/ace-north/bclambert/spatial-sim/Results"<<pa.set<<".txt";
-//            os<<"$DATA/spatial-sim/Results"<<pa.set<<".txt";
+            ostringstream ostr1, ostr2;
+            ostr1<<pa.chiB;
+            ostr2<<pa.etaB;
+            string str1, str2, sstr1, sstr2;
+            str1 = ostr1.str();
+            str2 = ostr2.str();
+            sstr1 = str1.substr(2,3);
+            sstr2 = str2.substr(2,3);
+            cout<<"The value of the first string is: "<<sstr1<<"\n";
+
+            os<<"/data/ace-north/bclambert/spatial-sim/Results"<<sstr1<<sstr2<<".txt";
+//            os<<"Results"<<sstr1<<sstr2<<".txt";
+
             run.open(os.str().c_str());// Use this if want to write output to file instead of cout
 			RunNReps(ti.N);
 			run.close();os.str("");
@@ -210,7 +221,10 @@
 		{
 //		    cout<<"Running Initiate, iteration: "<<i<<"\n";
 			initiate(i);
-			cout<<"Running RunMaxT"<<"\n";
+//			cout<<"Running RunMaxT"<<"\n";
+
+            cout<<"\n";
+			cout<<"TT"<<"      "<<"to.J"<<"       "<<"to.M-to.HegM"<<"       "<<"to.HegM"<<"       "<<"to.Un"<<"     "<<"to.Ho"<<"     "<<"to.Ov"<<"      "<<"to.FeedSites"<<"     "<<"pa.thetaB"<<"     "<<"to.Breed_w"<<"     "<<"to.Breed_e"<<"    "<<"to.mate"<<"      "<<"to.comp"<<"     "<<"to.Hfeed"<<"     " <<"to.Oovi"<<"     "<<"to.samples"<<"     "<<"to.house_dense"<<endl;//write global densiies into output
 			RunMaxT(i);
 		};
 		return;};
@@ -222,7 +236,8 @@
 		int swit=0;
 		while (TT<ti.maxT)//loop for running between one time interval
 			{ //Record the various totals of different species to the consol
-cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<pa.thetaB<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;//write global densiies into output
+
+            cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<pa.thetaB<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;//write global densiies into output
 			run<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<pa.thetaB<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;//write global densiies into output			TT+=ti.interval;
 			TT+=ti.interval;
 			TTT+=ti.interval;
@@ -260,6 +275,8 @@ cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "
 
 
 	void initiate(int i){
+
+        pa.thetaB=0.0001;
 		int num,index;
 		//to is an instance of 'Totals' - a struct of the global totals of each entity type
 		to.J=0;to.Ho=0;to.Ov=0;
@@ -321,6 +338,7 @@ cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "
 			num = int(pa.U*pa.U*pa.thetaB);
 				for(index=0;index<num;index++) BreedCreate();//place breeding sites
 
+
 		//------------------------ run landscapes without mosquitoes for a while to establish covariance structure---
 		double T;
 		T=0;
@@ -334,20 +352,33 @@ cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "
 		//-----------------------------remainder of this function places initial wildtype mosquitoe--------------------
 
 			num = int(in.JX+in.JY+in.U+in.H+in.O+in.M);
+
 			for(index=0;index<num;index++)
 				  {
-				    if(index<num*in.JX/double(in.JX+in.JY)) JuvCreate('X');
-				      else JuvCreate('W');
+
+
+                        if(double(index)<=double(num*in.JX)/double(in.JX+in.JY))
+                        {
+                            JuvCreate('X');
+                        }
+                      else
+                          {
+                              JuvCreate('W');
+                          }
 				  };
+				  cout<<"End of initiate...\n";
 			num = int(in.U+in.H+in.O+in.M);
 				for(index=0;index<num;index++)
 				{ if(to.J>0)JuvEmerge();};
+
+
 			num = int(in.H+in.O);
 				for(index=0;index<num;index++)
 				{if(to.mate>0) Mate();};
 			num = int(in.O);
 				for(index=0;index<num;index++)
 				{if(to.Hfeed>0) HFeed();};
+
 		//----------------------------------------------------------------------------------------------------------
 	return;};
 
@@ -977,6 +1008,7 @@ int* SelectEggs (char gen)
                                 indiv.Breed[xi][yi][ind].status='w';
                                 to.Breed_e--;
                         };
+
 	    return;};
 
 

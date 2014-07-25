@@ -21,7 +21,7 @@ LRO     300
 Lrho     500
 LA     500
 LB     150
-thetaA     1e-05
+thetaA     1e-005
 thetaB     0.0001
 sigmaA     0
 sigmaB     0.05
