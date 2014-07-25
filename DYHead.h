@@ -12,7 +12,8 @@
 #include <stdio.h>
 #include <ctime>
 #include <cstdlib> // for exit function
-
+#include <sstream>
+#include <string>
 
 #ifndef RANDOMC_H
 #define RANDOMC_H
@@ -222,6 +223,8 @@ struct Pars // Container for various parameters involved in the simulation.
 
 		//Functions for rainfall seasonality
 		double OrsteinUhlenbeck(double, double);
+		void parameter_txt_generator();
+		string make_filename( const string& basename, int index, const string& ext );
 
 
 //------------------------------------------------------------------------------------------------------------------------------

@@ -28,12 +28,12 @@
             ti.interval=1;
 			ti.totalruntime=100;
 			ti.maxT=300;
-			ti.rec=200;
+			ti.rec=500;
 			ti.landscape_initiation=50;
 			ti.N=1;
 			in.heg=1000;
 			in.dist='p';
-			in.heg_time=50;
+			in.heg_time=500;
 			in.num_sites=1;
 			pa.set=1;
 			in.JX=5000;
@@ -75,8 +75,28 @@
 
 
             pa.thetaB_mean = 0.0001; // The mean of the Orstein-Uhlenbeck process
-            pa.chiB = 1; // The rate of reversal to the mean of the Orstein-Uhlenbeck process for the breedsite theta
-            pa.etaB = 3; // The magnitude of the error process
+//            pa.chiB = 1; // The rate of reversal to the mean of the Orstein-Uhlenbeck process for the breedsite theta
+//            pa.etaB = 1; // The magnitude of the error process
+
+            // Generate the necessary txt files with parameters
+//            parameter_txt_generator();
+
+
+//            ifstream myfile ("parameters64.txt");
+//            if (myfile.is_open())
+//            {
+//                myfile>> pa.chiB;
+//                myfile>> pa.etaB;
+//                myfile.close();
+//            }
+
+
+                cin>>pa.chiB;
+                cin>>pa.etaB;
+
+                cout<<pa.chiB<<"\n";
+                cout<<pa.etaB<<"\n";
+
 
 
 //			cin>>ti.interval;// time interval between recordings of population statistics
@@ -120,7 +140,7 @@
 //			cin>>pa.LA;//feedsite detection radius
 //			cin>>pa.LB;//breedsite detection radius
 //			cin>>pa.thetaA;// density of feedsites
-//			cin>>pa.thetaB;// densite of breedsites
+//			cin>>pa.thetaB;// density of breedsites
 //			cin>>pa.sigmaA;// turnover of feedsites (typically set to 0)
 //			cin>>pa.sigmaB;// turnover of breedsites
 //			cin>>pa.thetaC;// density of sample points (for landscapes with covariance)
@@ -201,8 +221,8 @@
 		int swit=0;
 		while (TT<ti.maxT)//loop for running between one time interval
 			{ //Record the various totals of different species to the consol
-cout<<TT<<"      "<<to.Breed_w<<"     "<<pa.thetaB<<"    "<<endl;//write global densiies into output
-			run<<TT<<"      "<<to.Breed_w<<"     "<<pa.thetaB<<"    "<<endl;//write global densiies into output
+cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<pa.thetaB<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;//write global densiies into output
+			run<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "<<to.Un<<"     "<<to.Ho<<"     "<<to.Ov <<"      "<<to.FeedSites<<"     "<<pa.thetaB<<"     "<<to.Breed_w<<"     "<<to.Breed_e<<"    "<<to.mate<<"      "<<to.comp<<"     "<<to.Hfeed<<"     " <<to.Oovi<<"     "<<to.samples<<"     "<<to.house_dense<<endl;//write global densiies into output			TT+=ti.interval;
 			TT+=ti.interval;
 			TTT+=ti.interval;
 			if(swit==0 && TT>in.heg_time && to.J>0)
@@ -1749,3 +1769,58 @@ double OrsteinUhlenbeck(double dt, double theta) // A function which increments 
 
     return theta;
 }
+
+// A function which outputs the various txt files which contain parameter values for the simulation
+void parameter_txt_generator()
+{
+    int i_nchi, i_neta;
+    i_nchi = 8;
+    i_neta = 8;
+
+    vector<double> v_chiB(i_nchi);
+    vector<double> v_etaB(i_neta);
+
+    for(int i = 1; i<i_nchi+1; i++)
+    {
+        v_chiB[i-1] = 0.01*pow(10,0.25*i-0.25);
+    }
+
+    for(int i = 1; i<i_neta+1; i++)
+    {
+        v_etaB[i-1] = 0.01*pow(10,0.25*i-0.25);
+    }
+
+
+int k = 1;
+    for(int i = 0; i<i_nchi; i++)
+    {
+        for(int j = 0; j<i_neta; j++)
+        {
+            string a = "parameters";
+            string c = ".txt";
+
+            string final;
+            final = make_filename(a,k,c);
+
+            ofstream myfile;
+
+            myfile.open( final.c_str());
+            if (myfile.is_open())
+            {
+                myfile<< v_chiB[i]<<"\n";
+                myfile<< v_etaB[j]<<"\n";
+                myfile.close();
+            }
+            k = k + 1;
+        }
+    }
+
+}
+
+// A function which makes a file name in a format which can be used dynamically to create parameter files
+string make_filename( const string& basename, int index, const string& ext )
+  {
+  ostringstream result;
+  result << basename << index << ext;
+  return result.str();
+  }
