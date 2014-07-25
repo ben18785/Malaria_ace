@@ -1,10 +1,10 @@
 # depslib dependency file v1.0
-1406211678 source:c:\users\ben\dropbox\malaria\modelling\c++\dyrun.cpp
+1406279928 source:c:\users\ben\dropbox\malaria\modelling\c++\dyrun.cpp
 	"DYHead.h"
 
 1405593428 
 
-1406210533 c:\users\ben\dropbox\malaria\modelling\c++\dyhead.h
+1406213344 c:\users\ben\dropbox\malaria\modelling\c++\dyhead.h
 	<iostream>
 	<fstream>
 	<stdlib.h>
@@ -16,6 +16,8 @@
 	<stdio.h>
 	<ctime>
 	<cstdlib>
+	<sstream>
+	<string>
 
 1405605111 source:/home/ben/Dropbox/Malaria/Modelling/C++/DYRun.cpp
 	"DYHead.h"

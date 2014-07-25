@@ -26,7 +26,7 @@
             //in is an example of the 'initials' struct which contains initial conditions
             // pa is an instance of 'Pars' - container for various parameters involved in the simulation.
             ti.interval=1;
-			ti.totalruntime=100;
+			ti.totalruntime=200;
 			ti.maxT=300;
 			ti.rec=500;
 			ti.landscape_initiation=50;
@@ -195,7 +195,8 @@
 			param.close();
 			os.str("");
 
-            os<<"Results"<<pa.set<<".txt";
+            os<<"/data/ace-north/bclambert/spatial-sim/Results"<<pa.set<<".txt";
+//            os<<"$DATA/spatial-sim/Results"<<pa.set<<".txt";
             run.open(os.str().c_str());// Use this if want to write output to file instead of cout
 			RunNReps(ti.N);
 			run.close();os.str("");
@@ -253,7 +254,7 @@ cout<<TT<<"      "<<to.J<<"       "<<to.M-to.HegM<<"       "<<to.HegM<<"       "
 
 			pa.thetaB = OrsteinUhlenbeck(dt,pa.thetaB);
 
-			if((std::clock() - star)/ (double)CLOCKS_PER_SEC>ti.totalruntime)exit(1);// abort if simulation exceeds alloted real time
+			if((std::clock() - star)/ (double)CLOCKS_PER_SEC>ti.totalruntime)exit(1);// abort if simulation exceeds allotted real time
 		    };
 	return;}
 
