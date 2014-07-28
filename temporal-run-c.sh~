@@ -1,0 +1,41 @@
+#!/bin/bash
+
+#PBS -V
+#PBS -l nodes=2:ppn=16
+#PBS -l walltime=4:00:00
+#PBS -N SprDiffA
+
+cd ./spatial
+
+./temporal_run_c<parameters1.txt>$DATA/temporal-sim/Res1 & 
+./temporal_run_c<parameters2.txt>$DATA/temporal-sim/Res2 & 
+./temporal_run_c<parameters3.txt>$DATA/temporal-sim/Res3 & 
+./temporal_run_c<parameters4.txt>$DATA/temporal-sim/Res4 & 
+./temporal_run_c<parameters5.txt>$DATA/temporal-sim/Res5 & 
+./temporal_run_c<parameters6.txt>$DATA/temporal-sim/Res6 & 
+./temporal_run_c<parameters7.txt>$DATA/temporal-sim/Res7 & 
+./temporal_run_c<parameters8.txt>$DATA/temporal-sim/Res8 & 
+./temporal_run_c<parameters9.txt>$DATA/temporal-sim/Res9 & 
+./temporal_run_c<parameters10.txt>$DATA/temporal-sim/Res10 & 
+./temporal_run_c<parameters11.txt>$DATA/temporal-sim/Res11 & 
+./temporal_run_c<parameters12.txt>$DATA/temporal-sim/Res12 & 
+./temporal_run_c<parameters13.txt>$DATA/temporal-sim/Res13 & 
+./temporal_run_c<parameters14.txt>$DATA/temporal-sim/Res14 & 
+./temporal_run_c<parameters15.txt>$DATA/temporal-sim/Res15 & 
+./temporal_run_c<parameters16.txt>$DATA/temporal-sim/Res16 & 
+./temporal_run_c<parameters17.txt>$DATA/temporal-sim/Res17 & 
+./temporal_run_c<parameters18.txt>$DATA/temporal-sim/Res18 & 
+./temporal_run_c<parameters19.txt>$DATA/temporal-sim/Res19 & 
+./temporal_run_c<parameters20.txt>$DATA/temporal-sim/Res20 & 
+./temporal_run_c<parameters21.txt>$DATA/temporal-sim/Res21 & 
+./temporal_run_c<parameters22.txt>$DATA/temporal-sim/Res22 &
+./temporal_run_c<parameters23.txt>$DATA/temporal-sim/Res23 &
+./temporal_run_c<parameters24.txt>$DATA/temporal-sim/Res24 &
+./temporal_run_c<parameters25.txt>$DATA/temporal-sim/Res25 &
+./temporal_run_c<parameters26.txt>$DATA/temporal-sim/Res26 &
+./temporal_run_c<parameters27.txt>$DATA/temporal-sim/Res27 &
+./temporal_run_c<parameters28.txt>$DATA/temporal-sim/Res28 &
+./temporal_run_c<parameters29.txt>$DATA/temporal-sim/Res29 &
+./temporal_run_c<parameters30.txt>$DATA/temporal-sim/Res30 &
+./temporal_run_c<parameters31.txt>$DATA/temporal-sim/Res31
+./temporal_run_c<parameters32.txt>$DATA/temporal-sim/Res32

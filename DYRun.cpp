@@ -26,10 +26,10 @@
             //in is an example of the 'initials' struct which contains initial conditions
             // pa is an instance of 'Pars' - container for various parameters involved in the simulation.
             ti.interval=1;
-			ti.totalruntime=100;
+			ti.totalruntime=10000;
 			ti.maxT=300;
 			ti.rec=500;
-			ti.landscape_initiation=300;
+			ti.landscape_initiation=50;
 			ti.N=100;
 			in.heg=1000;
 			in.dist='p';
@@ -65,7 +65,7 @@
 			pa.Lrho=500;
 			pa.LA=500;
 			pa.LB=150;
-			pa.thetaA=0.00001;
+			pa.thetaA=0.000001;
 			pa.thetaB=0.0001;
 			pa.thetaC=0.0001;
 			pa.sigmaA=0;
@@ -79,7 +79,7 @@
 //            pa.etaB = 0.567; // The magnitude of the error process
 
             // Generate the necessary txt files with parameters
-//            parameter_txt_generator();
+            parameter_txt_generator();
 
 
 //            ifstream myfile ("parameters64.txt");
@@ -205,7 +205,7 @@
             sstr2 = str2.substr(2,3);
             cout<<"The value of the first string is: "<<sstr1<<"\n";
 
-            os<<"/data/ace-north/bclambert/spatial-sim/Results"<<sstr1<<sstr2<<".txt";
+            os<<"/data/ace-north/bclambert/temporal-sim/Results"<<sstr1<<sstr2<<".txt";
 //            os<<"Results"<<sstr1<<sstr2<<".txt";
 
             run.open(os.str().c_str());// Use this if want to write output to file instead of cout
@@ -1842,6 +1842,7 @@ int k = 1;
             {
                 myfile<< v_chiB[i]<<"\n";
                 myfile<< v_etaB[j]<<"\n";
+                myfile<< k<<"\n";
                 myfile.close();
             }
             k = k + 1;
